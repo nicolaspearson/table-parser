@@ -1,12 +1,15 @@
-TableParser [![Build Status](https://travis-ci.org/neekey/table-parser.svg)](https://travis-ci.org/neekey/table-parser)
-================
+# Table Parser
 
 A parser to parse table style output from shell
 
+__This project was forked to slim down the prod dependencies__
+
 ## Install
 
+You can include it your package.json file as follows:
+
 ```
-npm install table-parser
+"table-parser": "nicolaspearson/table-parser"
 ```
 
 ## Usage
@@ -15,13 +18,13 @@ We have some kind of log below as `test/ps.log`:
 
 ```bash
   PID TTY           TIME CMD
-49692 ttys000    0:00.06 login -pfl neekey /bin/bash -c exec -la bash /bin/bash
+49692 ttys000    0:00.06 login -pfl local /bin/bash -c exec -la bash /bin/bash
 49693 ttys000    0:00.06 -bash
 54195 ttys000    0:00.09 node run
 
 ...
 
-56266 ttys005    0:00.06 login -pfl neekey /bin/bash -c exec -la bash /bin/bash
+56266 ttys005    0:00.06 login -pfl local /bin/bash -c exec -la bash /bin/bash
 56269 ttys005    0:00.04 -bash
 56463 ttys005    0:00.09 node test.js
 56464 ttys005    0:00.01 ps -a
@@ -30,16 +33,15 @@ We have some kind of log below as `test/ps.log`:
 Use table-parser to parse it into object:
 
 ```
-var FS = require( 'fs' );
+var fs = require( 'fs' );
 var Parser = require('table-parser');
 
 var linux_ps = './ps.log';
 
-data = FS.readFileSync( linux_ps ).toString();
+data = fs.readFileSync( linux_ps ).toString();
 var parsedData = Parser.parse( data );
 
 console.log( parsedData );
-
 ```
 
 Which will output:
@@ -51,7 +53,7 @@ Which will output:
     CMD:
      [ 'login',
        '-pfl',
-       'neekey',
+       'local',
        '/bin/bash',
        '-c',
        'exec',
@@ -68,17 +70,16 @@ Which will output:
 
 ## Double quotation marks
 
-Normally, all the values will be transformed into array using `split( /\s+/ )`, but string wrapped with `"` will be treated as a continuous string. 
+Normally, all the values will be transformed into array using `split( /\s+/ )`, but string wrapped with `"` will be treated as a continuous string.
 
 For example, the CommandLine below:
 
 ```
-"C:\Program Files\Internet Explorer\iexplore.exe" --name="Jack Neekey" --sex=male otherargs
+"C:\Program Files\Internet Explorer\iexplore.exe" --name="Local" --type=parse
 ```
 
 will be split into:
 
 - `C:\Program Files\Internet Explorer\iexplore.exe` ( `"` will be removed, if `"` is at the beginning )
-- `--name="Jack Neekey"`    ( `"` is reserved )
-- `--sex=male`
-- `otherargs`
+- `--name="Local"`    ( `"` is reserved )
+- `--type=parse`
